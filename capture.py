@@ -15,5 +15,5 @@ while cpt < maxFrames:
     if not ret: # if return code is bad, abort.
         sys.exit(0)
     cv2.imshow("test window", frame) # show image in window
-    cv2.imwrite("image%04i.jpg" %cpt, frame)
+    cv2.imwrite("dataset/abizar/image%04i.jpg" %cpt, frame)
     cpt += 1
