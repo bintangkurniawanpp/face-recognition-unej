@@ -6,7 +6,7 @@ cpt = 0
 maxFrames = 5 # if you want 5 frames only.
 
 video = cv2.VideoCapture(1)
-inp = input("Nama : ")
+inp = input("Input Nama : ")
 while True:
     ret,frame = video.read()
     cv2.imshow('camera',frame)
@@ -22,7 +22,6 @@ while True:
             cv2.imshow('captured', frame)
             cv2.imwrite("dataset/" + str(inp) + "/image%04i.jpg" %cpt, frame)
             cpt += 1
-        
-    
+
 video.release()
 cv2.destroyAllWindows()
