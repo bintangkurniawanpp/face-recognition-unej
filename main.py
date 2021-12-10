@@ -7,7 +7,7 @@ import os
  
 #find path of xml file containing haarcascade file 
 cascPathface = os.path.dirname(
- cv2.__file__) + "/data/haarcascade_frontalface_alt2.xml"
+cv2.__file__) + "/data/haarcascade_frontalface_alt2.xml"
 # load the harcaascade in the cascade classifier
 faceCascade = cv2.CascadeClassifier(cascPathface)
 # load the known faces and embeddings saved in last file
@@ -19,6 +19,7 @@ video_capture = cv2.VideoCapture(0)
 while True:
     # grab the frame from the threaded video stream
     ret, frame = video_capture.read()
+    frame = cv2.flip(frame,1)
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     faces = faceCascade.detectMultiScale(gray,
                                          scaleFactor=1.1,
@@ -29,6 +30,7 @@ while True:
     # convert the input frame from BGR to RGB 
     rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     # the facial embeddings for face in input
+    
     encodings = face_recognition.face_encodings(rgb)
     names = []
     # loop over the facial embeddings incase
