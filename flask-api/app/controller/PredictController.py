@@ -10,17 +10,13 @@ from tensorflow import keras
 # OpenCV
 import cv2
 
-from flask import Flask, request
+# Flask
+from flask import request
+from app import db
+from app.model.user import User
+from sqlalchemy import text
 
-app = Flask(__name__)
-
-@app.route('/', methods=['GET'])
-def hello_world():
-    return 'Hello World!'
-
-@app.route('/predict', methods=['POST'])
 def predict():
-
     # opencv object that will detect faces for us
     face_cascade = cv2.CascadeClassifier(
         cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
@@ -29,7 +25,11 @@ def predict():
     model_name = 'face_classifier.h5'
 
     face_classifier = keras.models.load_model(f'../models/{model_name}')
-    class_names = ['abizar', 'bintang', 'muchdor']
+    #class_names = ['abizar', 'bintang', 'muchdor']
+    
+    sql = text("SELECT name FROM user")
+    result = db.engine.execute(sql)
+    class_names = [row[0] for row in result]
 
     def get_extended_image(img, x, y, w, h, k=0.1):
         '''
@@ -97,9 +97,8 @@ def predict():
         confidence = np.array(result[0]).max(axis=0)  # degree of confidence
 
     # display the resulting frame
+
+
     return prediction
 
-
-if __name__ == '_main_':
-    app.run(port=3000, debug=True) 
 

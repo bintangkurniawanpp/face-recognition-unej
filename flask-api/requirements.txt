@@ -1,0 +1,10 @@
+numpy
+matplotlib
+tensorflow
+seaborn
+opencv-python
+flask
+python-dotenv
+flask-sqlalchemy
+flask-migrate
+pymysql
