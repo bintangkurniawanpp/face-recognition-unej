@@ -82,7 +82,7 @@ def get_extended_image(img, x, y, w, h, k=0.1):
 #     print("Can't receive frame (stream end?). Exiting ...")
 #     break
 
-frame = cv2.imread(os.path.join('images', 'WIN_20211218_10_19_56_Pro.jpg'))
+frame = cv2.imread(os.path.join('images', 'WIN_20211220_08_06_31_Pro.jpg'))
 print(frame)
 gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 

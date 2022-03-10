@@ -14,7 +14,20 @@ import cv2
 from flask import request
 from app import db
 from app.model.user import User
-from sqlalchemy import text
+##from sqlalchemy import text
+
+
+# def get_class_name_from_db():
+#     try:
+#         sql = text('SELECT * FROM class_name')
+#         result = db.engine.execute(sql)
+#         class_names = []
+#         for row in result:
+#             class_names.append(row[1])
+#         return class_names
+#     except Exception as e:
+#         print(e)
+#         return None    
 
 def predict():
     # opencv object that will detect faces for us
@@ -25,11 +38,8 @@ def predict():
     model_name = 'face_classifier.h5'
 
     face_classifier = keras.models.load_model(f'../models/{model_name}')
-    #class_names = ['abizar', 'bintang', 'muchdor']
-    
-    sql = text("SELECT name FROM user")
-    result = db.engine.execute(sql)
-    class_names = [row[0] for row in result]
+    class_names = ['abizar', 'bintang', 'muchdor']
+    # class_names = get_class_name_from_db()
 
     def get_extended_image(img, x, y, w, h, k=0.1):
         '''
@@ -97,8 +107,121 @@ def predict():
         confidence = np.array(result[0]).max(axis=0)  # degree of confidence
 
     # display the resulting frame
-
-
     return prediction
 
 
+## UNDER DEVELOPMENT
+# def register_face():
+#     return 'registerFace'
+
+# def train():
+
+
+#     train_image_folder = os.path.join('datasets', 'face_dataset_train_aug_images')
+#     test_image_folder = os.path.join('datasets', 'face_dataset_test_images')
+#     img_height, img_width = 250, 250  # size of images
+#     num_classes = 3 
+
+#     # Training settings
+#     validation_ratio = 0.15  # 15% for the validation
+#     batch_size = 16
+
+#     AUTOTUNE = tf.data.AUTOTUNE
+
+
+#     # Train and validation sets
+#     train_ds = keras.preprocessing.image_dataset_from_directory(
+#         train_image_folder,
+#         validation_split=validation_ratio,
+#         subset="training",
+#         seed=42,
+#         image_size=(img_height, img_width),
+#         label_mode='categorical',
+#         batch_size=batch_size,
+#         shuffle=True)
+
+#     val_ds = keras.preprocessing.image_dataset_from_directory(
+#         train_image_folder,
+#         validation_split=validation_ratio,
+#         subset="validation",
+#         seed=42,
+#         image_size=(img_height, img_width),
+#         batch_size=batch_size,
+#         label_mode='categorical',
+#         shuffle=True)
+
+
+#     # Test set
+#     test_ds = keras.preprocessing.image_dataset_from_directory(
+#         test_image_folder,
+#         image_size=(img_height, img_width),
+#         label_mode='categorical',
+#         shuffle=False)
+
+
+#     class_names = test_ds.class_names
+#     class_names
+
+
+#     """
+#     ## Modelling with ResNet50
+#     """
+
+
+#     base_model = keras.applications.ResNet50(weights='imagenet',
+#                                             include_top=False,  # without dense part of the network
+#                                             input_shape=(img_height, img_width, 3))
+
+#     # Set layers to non-trainable
+#     for layer in base_model.layers:
+#         layer.trainable = False
+
+#     # Add custom layers on top of ResNet
+#     global_avg_pooling = keras.layers.GlobalAveragePooling2D()(base_model.output)
+#     output = keras.layers.Dense(num_classes, activation='sigmoid')(global_avg_pooling)
+
+#     face_classifier = keras.models.Model(inputs=base_model.input,
+#                                         outputs=output,
+#                                         name='ResNet50')
+#     face_classifier.summary()
+
+
+#     # ModelCheckpoint to save model in case of interrupting the learning process
+#     checkpoint = ModelCheckpoint("models/face_classifier.h5",
+#                                 monitor="val_loss",
+#                                 mode="min",
+#                                 save_best_only=True,
+#                                 verbose=1)
+
+#     # EarlyStopping to find best model with a large number of epochs
+#     earlystop = EarlyStopping(monitor='val_loss',
+#                             restore_best_weights=True,
+#                             patience=3,  # number of epochs with no improvement after which training will be stopped
+#                             verbose=1)
+
+#     callbacks = [earlystop, checkpoint]
+
+
+#     face_classifier.compile(loss='categorical_crossentropy',
+#                             optimizer=keras.optimizers.Adam(learning_rate=0.01),
+#                             metrics=['accuracy'])
+
+
+#     """
+#     ## Training
+#     """
+
+
+#     epochs = 5
+
+#     history = face_classifier.fit(
+#         train_ds,
+#         epochs=epochs,
+#         callbacks=callbacks,
+#         validation_data=val_ds)
+
+#     face_classifier.save("models/face_classifier.h5")
+
+
+
+#     return 'train'
